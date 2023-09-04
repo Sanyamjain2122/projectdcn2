@@ -54,7 +54,7 @@ module.exports.signIn = function(req, res){
    
     if (req.isAuthenticated()){
         //req.flash('success','Already signed in');
-        return res.redirect('/users/profile');
+        return res.redirect('/users/profile/main');
     }
    
      res.render('user_sign_in', {

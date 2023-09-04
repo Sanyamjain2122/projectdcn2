@@ -4,7 +4,23 @@ module.exports.create=function(req,res){
 Post.create({
     content:req.body.content,
     user:req.user._id
-}).then(()=>{return res.redirect('back')}).catch(err=>{console.log("error in creating post");
+}).then((post)=>{
+if(req.xhr){
+    return res.status(200).jsosn({
+        data:{
+            post: post
+        },
+        message:"post created"
+    })
+
+
+}
+req.flash('success', 'Post Published');
+return res.redirect('back');
+
+
+
+}).catch(err=>{console.log("error in creating post");
 return;})
 }
 
