@@ -19,10 +19,11 @@ module.exports.profile = function(req, res){
 }
 
 
-module.exports.update = function(req, res){
-    
-    
+module.exports.update = async function(req, res){
+   /* 
+  console.log("inside update");
     if(req.user.id == req.params.id){
+        console.log("insidie update if ")
         User.findByIdAndUpdate(req.params.id, req.body).then(user=>{
             return res.redirect('back');
         }).catch((err)=>{
@@ -31,7 +32,40 @@ module.exports.update = function(req, res){
 }
 else
 return res.redirect('back');
-    
+
+*/
+// for multer or uploading multipart form
+if(req.user.id == req.params.id){
+    try{
+        console.log("inside multer update")
+      let user =await User.findById(req.params.id)
+        User.uploadedAvatar(req,res, function(err){
+            if(err){console.log('****Multer Error: ', err)}
+           console.log(req.file);
+           user.name=req.body.name;
+           user.email=req.body.email;
+
+           if(req.file){
+               user.avatar=User.avatarPath+'/'+req.file.filename;
+           }
+           user.save();
+           
+           console.log("inside multer update file")
+          // console.log(req);
+            return res.redirect('back');
+         
+       
+   
+    }) } catch(err) {
+       req.flash('error', 'ERROR aa gya')
+       return res.redirect('back');
+   }
+   }
+   else
+   {
+       req.flash('error', 'Unauthorized')
+       return res.status(401).send('Unauthorized');
+   }
 }
 
 
@@ -39,7 +73,7 @@ return res.redirect('back');
 module.exports.signUp = function(req, res){
     if (req.isAuthenticated()){
         console.log("Signup : ", req.user.id);
-        return res.redirect('/users/profile/main');
+        return res.redirect('/users/profile/'+req.user.id);
     }
 
 
@@ -54,7 +88,7 @@ module.exports.signIn = function(req, res){
    
     if (req.isAuthenticated()){
         //req.flash('success','Already signed in');
-        return res.redirect('/users/profile/main');
+        return res.redirect('/users/profile/'+req.user.id);
     }
    
      res.render('user_sign_in', {
