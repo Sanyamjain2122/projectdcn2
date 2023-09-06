@@ -4,7 +4,7 @@ const jwt=require('jsonwebtoken');
 module.exports.createSession = async function(req,res){
  try{
     let user = await User.findOne({email: req.body.email});
-    //console.log("check user", user.email);
+    console.log("check user", user);
         if (!user || user.password != req.body.password){
         //req.flash('error','Invalid Username/Password');
         return res.json(422,{
@@ -16,7 +16,7 @@ module.exports.createSession = async function(req,res){
     return res.json(200,{
       message:"sign in successful",
         data:{
-            token:jwt.sign(user.toJSON(),'codeial',{expiresIn:'10000'})
+            token:jwt.sign(user.toJSON(),'codeial',{expiresIn:'100000000'})
         }
     })
 
