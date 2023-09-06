@@ -1,17 +1,23 @@
 const Comment=require('../models/comment');
 const Post=require('../models/post');
+const commentMailer=require('../mailer/comments_mailer');
 
 
-module.exports.create=function(req,res){
+module.exports.create= async function(req,res){
     //Comment.create().then().catch();
   Post.findById(req.body.post).then((post)=>{
     Comment.create({
         content:req.body.content,
         post: req.body.post, // as in ejs , we have given post._id value to post variable
         user:req.user._id    // as here also we are using user._id directly
-    }).then(comment=>{post.comments.push(comment);
+    }).then(comment=>{
+      post.comments.push(comment);
     post.save();
-    return res.redirect('/');
+    comment.populate('user','email').then(comm=>{
+      commentMailer.newComment(comment);
+      return res.redirect('/');
+    });
+    
 })
   }).catch(err=>{
     console.log("error in creating comment");
