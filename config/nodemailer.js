@@ -1,3 +1,5 @@
+const ejs=require('ejs');
+const path=require('path')
 const nodemailer=require("nodemailer");
 
 
@@ -16,8 +18,8 @@ let transporter=nodemailer.createTransport({
 
 let renderTemplate=(data,relativePath)=>{
     let mailHTML;
-    ejs.renderFile(
-        path.join(__dirname,'../views/mailers',relativePath),
+ejs.renderFile(
+        path.join(__dirname,'../views/mailer',relativePath),
     data,
     function(err,template){
         if(err){console.log("error in rendering mail");return;}
