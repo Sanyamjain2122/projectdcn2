@@ -1,6 +1,7 @@
 const Comment=require('../models/comment');
 const Post=require('../models/post');
 const commentMailer=require('../mailer/comments_mailer');
+const Like=require('../models/like')
 
 
 module.exports.create= async function(req,res){
@@ -35,7 +36,8 @@ module.exports.destroy = function(req, res){
             let postId = comment.post;
 
             Comment.deleteOne({_id:comment._id}).then(()=>{
-                Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}}).then();
+              
+                Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}}).then(()=>{Like.deleteMany({likeable: comment._id, onModel: 'Comment'}).then();});
 
             })
         }

@@ -1,5 +1,6 @@
 const Post=require('../models/post')
 const Comment=require('../models/comment')
+const Like=require('../models/like')
 module.exports.create=function(req,res){
 Post.create({
     content:req.body.content,
@@ -26,13 +27,19 @@ return;})
 
 
 
-module.exports.destroy = function(req, res){
+module.exports.destroy =  function(req, res){
     Post.findById(req.params.id).then(
         (post)=>{
             // .id means converting the object id into string
             if (post.user == req.user.id){
                Post.deleteOne({_id:post._id}).then(()=>{
-                Comment.deleteMany({post: req.params.id}).then();
+                //deleting likes of the post
+               Like.deleteMany({likeable: post, onModel: 'Post'}).then(()=>{Like.deleteMany({likeable: {$in: post.comments}}).then(()=>{Comment.deleteMany({post: req.params.id}).then()})})
+
+                //deleting likes in the comments of that post
+                   
+               // Comment.deleteMany({post: req.params.id}).then();
+
 
                })
     
