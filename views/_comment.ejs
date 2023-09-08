@@ -10,6 +10,19 @@
             <small>
                 <%= comment.user.name %>
             </small>
+            <% if (locals.user){ %>
+                <small>
+    
+                    <a href="/like/toggle/?id=<%=comment._id%>&type=Comment""> <%= comment.likes.length %> Likes </a>
+                </small>
+            
+            <% } else{ %>
+            
+                <small>
+                    <%= comment.likes.length %> Likes 
+                </small>
+            
+            <% } %>
         </p>    
 
 </li>
